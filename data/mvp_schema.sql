@@ -1,6 +1,6 @@
 CREATE TABLE
     Families (
-        famId INTEGER PRIMARY KEY,
+        famId INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL
     );
 
@@ -12,28 +12,29 @@ CREATE TABLE
 
 CREATE TABLE
     Keywords (
-        keyId INTEGER PRIMARY KEY,
+        keyId INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
-        priority INTEGER NOT NULL
+        priority INTEGER NOT NULL,
+        memory BOOLEAN NOT NULL
     );
 
 CREATE TABLE
     Decompositions (
-        decId INTEGER PRIMARY KEY,
+        decId INTEGER PRIMARY KEY AUTOINCREMENT,
         keyword INTEGER NOT NULL,
         value TEXT NOT NULL
     );
 
 CREATE TABLE
     Recompositions (
-        recId INTEGER PRIMARY KEY,
+        recId INTEGER PRIMARY KEY AUTOINCREMENT,
         decomposition INTEGER NOT NULL,
         value TEXT NOT NULL,
         history INTEGER NULL
     );
 
-CREATE TABLE transformations (
-        from
-            TEXT PRIMARY KEY,
-            to TEXT NOT NULL
+CREATE TABLE
+    Transformations (
+        from_word TEXT PRIMARY KEY,
+        to_word TEXT NOT NULL
     );
