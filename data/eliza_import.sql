@@ -13,42 +13,28 @@ VALUES ( (
         "sorry\w*"
     );
 
+WITH sorry AS (
+        SELECT decId
+        FROM decompositions
+        WHERE
+            value = "sorry\w*"
+    )
 INSERT INTO
     Recompositions (decomposition, value, history)
-VALUES ( (
-            SELECT decId
-            FROM
-                decompositions
-            WHERE
-                value = "sorry\w*"
-        ),
+VALUES (
+        sorry,
         "Please don't apologize.",
         0
-    ), ( (
-            SELECT decId
-            FROM
-                decompositions
-            WHERE
-                value = "sorry\w*"
-        ),
+    ), (
+        sorry,
         "Apologies are not necessary.",
         0
-    ), ( (
-            SELECT decId
-            FROM
-                decompositions
-            WHERE
-                value = "sorry\w*"
-        ),
+    ), (
+        sorry,
         "What feelings do you have when you apologize?",
         0
-    ), ( (
-            SELECT decId
-            FROM
-                decompositions
-            WHERE
-                value = "sorry\w*"
-        ),
+    ), (
+        sorry,
         "I've told you that apologies are not required.",
         0
     );
@@ -58,82 +44,16 @@ VALUES ("dont", "don't"), ("cant", "can't"), ("wont", "won't"), ("i", "you"), ("
 
 INSERT INTO Families (name) VALUES ("belief"), ("family");
 
+with belief AS (
+        SELECT famId
+        FROM Families
+        WHERE
+            name = "belief"
+    ),
+    fam AS (
+        SELECT famId
+        FROM Families
+        WHERE name = "family"
+    )
 INSERT INTO FamiliesWords
-VALUES (
-        "feel", (
-            SELECT famId
-            FROM Families
-            WHERE
-                name = "belief"
-        )
-    ), (
-        "think", (
-            SELECT famId
-            FROM Families
-            WHERE
-                name = "belief"
-        )
-    ), (
-        "believe", (
-            SELECT famId
-            FROM Families
-            WHERE
-                name = "belief"
-        )
-    ), (
-        "wish", (
-            SELECT famId
-            FROM Families
-            WHERE
-                name = "belief"
-        )
-    ), (
-        "mother", (
-            SELECT famId
-            FROM Families
-            WHERE
-                name = "family"
-        )
-    ), (
-        "father", (
-            SELECT famId
-            FROM Families
-            WHERE
-                name = "family"
-        )
-    ), (
-        "sister", (
-            SELECT famId
-            FROM Families
-            WHERE
-                name = "family"
-        )
-    ), (
-        "brother", (
-            SELECT famId
-            FROM Families
-            WHERE
-                name = "family"
-        )
-    ), (
-        "wife", (
-            SELECT famId
-            FROM Families
-            WHERE
-                name = "family"
-        )
-    ), (
-        "husband", (
-            SELECT famId
-            FROM Families
-            WHERE
-                name = "family"
-        )
-    ), (
-        "children", (
-            SELECT famId
-            FROM Families
-            WHERE
-                name = "family"
-        )
-    );
+VALUES ("feel", belief), ("think", belief), ("believe", belief), ("wish", belief), ("mother", fam), ("father", fam), ("sister", fam), ("brother", fam), ("wife", fam), ("husband", fam), ("children", fam);
