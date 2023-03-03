@@ -19,14 +19,29 @@ struct Transformation {
     to_word: String,
 }
 
-struct FamilyWord {}
+struct FamilyWord {
+    family: String,
+    word: String,
+}
+
+struct Decomposition {
+    // TODO impl Eq para keyword
+    keyword: Keyword,
+    value: String,
+    recompositions: Vec<Recomposition>,
+}
+
+struct Recomposition {
+    value: String,
+    history: i32,
+}
 
 impl Ezra {
     pub fn new(db: &str) -> Result<Self, Box<dyn Error>> {
         let db = format!(":/data/{}.db", db);
-        let conn = Connection::open(db.clone())?;
+        let kw_query = Connection::open(db.clone())?;
 
-        let mut kw_query = conn.prepare("SELECT * FROM Keywords")?;
+        let mut kw_query = kw_query.prepare("SELECT * FROM Keywords ORDER BY priority DESC;")?;
 
         let kw_query = kw_query.query_map([], |row| {
             Ok(Keyword {
@@ -49,8 +64,7 @@ impl Ezra {
         })
     }
 
-    pub fn reply(&mut self, mut user_reply: String) -> Result<String, Box<dyn Error>> {
-        self.user_history.push(user_reply.clone());
+    fn transform(&self, mut user_reply: String) -> Result<String, Box<dyn Error>> {
         user_reply = user_reply.to_lowercase();
 
         let conn = Connection::open(format!(":/data/{}.db", self.db))?;
@@ -69,7 +83,14 @@ impl Ezra {
             user_reply = user_reply.replace(&transf.from_word, &transf.to_word);
         }
 
-        // TODO loopear oraciones dentro de keywords ordenados por prioridad
+        Ok(user_reply)
+    }
+
+    pub fn reply(&mut self, mut user_reply: String) -> Result<String, Box<dyn Error>> {
+        self.user_history.push(user_reply.clone());
+        user_reply = self.transform(user_reply.to_lowercase())?;
+
+        // TODO loopear oraciones *dentro* de keywords ordenados por prioridad
         let user_reply = user_reply.split('.').find(|&sentence| {
             for kw in &self.keywords {
                 match sentence.contains(&kw.name) {
